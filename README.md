@@ -61,9 +61,7 @@ The player can freely move around the environment, approach the basketball, pick
 
 A short 2-minute gameplay demonstration is included here:
 
-> *(Insert your video link or embed below)*  
-> Example:  
-> `https://your-video-link.com`
+[![Watch the video](https://img.youtube.com/vi/7kkcXlz5r_E/0.jpg)](https://www.youtube.com/watch?v=7kkcXlz5r_E)
 
 ---
 
