@@ -36,6 +36,7 @@ The player can freely move around the environment, approach the basketball, pick
 | Jump | `Space` |
 | Hold Basketball | Left Mouse Button (Click & Hold) |
 | Throw Basketball | Release Left Mouse Button |
+| Toggle Settings | Press Escape |
 
 ---
 
