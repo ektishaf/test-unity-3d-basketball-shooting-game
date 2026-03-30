@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -24,8 +25,8 @@ public class PlayerController : MonoBehaviour
     Camera cam;
 
     float xRotation;
-    Vector3 lastMousePos;
-    Vector3 mouseVelocity;
+    Vector2 moveInput;
+    Vector2 lookInput;
 
     void Start()
     {
@@ -37,14 +38,31 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            GameManager.Instance.ToggleSettings();
+        }
+
+        if(Cursor.lockState == CursorLockMode.None) return;
+
+        ReadInputs();
         Move();
         Look();
         HandleGrab();
-        HandleThrow();
-        TrackMouseVelocity();
-
         CheckGround();
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+    }
+
+    void ReadInputs()
+    {
+        moveInput = Vector2.zero;
+        if (Keyboard.current.wKey.isPressed) moveInput.y = 1;
+        if (Keyboard.current.sKey.isPressed) moveInput.y = -1;
+        if (Keyboard.current.aKey.isPressed) moveInput.x = -1;
+        if (Keyboard.current.dKey.isPressed) moveInput.x = 1;
+
+        lookInput = Mouse.current.delta.ReadValue();
+
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
@@ -52,18 +70,15 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-
-        Vector3 move = transform.right * h + transform.forward * v;
+        Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
         Vector3 targetVelocity = move * moveSpeed;
         rb.linearVelocity = new Vector3(targetVelocity.x, rb.linearVelocity.y, targetVelocity.z);
     }
 
     void Look()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+        float mouseX = lookInput.x * mouseSensitivity * 0.1f;
+        float mouseY = lookInput.y * mouseSensitivity * 0.1f;
 
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -70f, 70f);
@@ -74,7 +89,7 @@ public class PlayerController : MonoBehaviour
 
     void HandleGrab()
     {
-        if (Input.GetMouseButtonDown(0) && heldBall == null)
+        if (Mouse.current.leftButton.wasPressedThisFrame && heldBall == null)
         {
             Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f));
             if (Physics.Raycast(ray, out RaycastHit hit, grabDistance))
@@ -90,35 +105,26 @@ public class PlayerController : MonoBehaviour
 
         if (heldBall != null)
         {
-            heldBall.position = Vector3.Lerp(
-                heldBall.position,
-                holdPoint.position,
-                Time.deltaTime * 15f
-            );
+            heldBall.position = Vector3.Lerp(heldBall.position, holdPoint.position, Time.deltaTime * 15f);
+
+            if (Mouse.current.leftButton.wasReleasedThisFrame)
+            {
+                HandleThrow();
+            }
         }
     }
 
     void HandleThrow()
     {
-        if (Input.GetMouseButtonUp(0) && heldBall != null)
-        {
-            heldBall.useGravity = true;
+        heldBall.useGravity = true;
 
-            Vector3 dir = cam.transform.forward;
-            dir += Vector3.up * throwArc;
-            dir.Normalize();
+        Vector3 dir = cam.transform.forward;
+        dir += Vector3.up * throwArc;
+        dir.Normalize();
 
-            heldBall.linearVelocity = dir * force;
-            heldBall.AddTorque(Random.insideUnitSphere * 10f, ForceMode.Impulse);
-            heldBall = null;
-        }
-    }
-
-    void TrackMouseVelocity()
-    {
-        Vector3 current = Input.mousePosition;
-        mouseVelocity = (current - lastMousePos) / Time.deltaTime;
-        lastMousePos = current;
+        heldBall.linearVelocity = dir * force;
+        heldBall.AddTorque(Random.insideUnitSphere * 10f, ForceMode.Impulse);
+        heldBall = null;
     }
 
     void CheckGround()

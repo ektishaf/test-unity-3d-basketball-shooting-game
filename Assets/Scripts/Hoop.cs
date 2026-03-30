@@ -19,9 +19,15 @@ public class Hoop : MonoBehaviour
             if (ball != null)
             {
                 if (ball.IsCleanShot())
+                {
+                    GameManager.Instance.PlayCheerAudio();
                     GameManager.Instance.AddScore(2);
+                }
                 else
+                {
+                    GameManager.Instance.PlaySwishAudio();
                     GameManager.Instance.AddScore(1);
+                }
 
                 ball.ResetShot();
             }
