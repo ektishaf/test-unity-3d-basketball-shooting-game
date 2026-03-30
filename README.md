@@ -1,5 +1,13 @@
 # 🏀 3D Basketball Shooting Game Test (Unity)
 
+## 🎥 Gameplay Video
+
+A short 2-minute gameplay demonstration is included here:
+
+[![Watch the video](https://img.youtube.com/vi/7kkcXlz5r_E/0.jpg)](https://www.youtube.com/watch?v=7kkcXlz5r_E)
+
+---
+
 A simple 3D basketball shooting game where the player can explore the environment, pick up a basketball, and shoot it toward the hoop. The game includes basic movement, camera control, jumping, ball interaction, and a scoring system.
 
 ---
@@ -54,14 +62,6 @@ The player can freely move around the environment, approach the basketball, pick
 - When the ball successfully enters the hoop, the score increases by 1
 - When the ball successfully enters the hoop without touching the rim, the score increases by 2
 - The score indicator UI updates instantly to reflect the new score
-
----
-
-## 🎥 Gameplay Video
-
-A short 2-minute gameplay demonstration is included here:
-
-[![Watch the video](https://img.youtube.com/vi/7kkcXlz5r_E/0.jpg)](https://www.youtube.com/watch?v=7kkcXlz5r_E)
 
 ---
 
